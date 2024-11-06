@@ -56,17 +56,28 @@ class DepartemenController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Departemen $departemen)
+    public function edit($id)
     {
         //
+        $data = Departemen::where('kodedepartemen',$id)->first();
+        return view('departemen.edit')->with('data',$data);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Departemen $departemen)
+    public function update(Request $request,$id)
     {
         //
+        $request->validate([
+            'nama_departemen' => 'required',
+        ]);
+        $data = ([
+            'nama_departemen' =>$request->nama_departemen,
+        ]);
+        
+        Departemen::where('kodedepartemen',$id)->update($data);
+        return redirect('departemen')->with('success','Departemen berhasil diubah');
     }
 
     /**
