@@ -6,7 +6,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
-use App\Http\Controllers\controller;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class SessionController extends Controller
@@ -30,14 +30,14 @@ class SessionController extends Controller
             'email'=>$request->email,
             'password'=>$request->password
         ];
-        if (Auth::Attempt($infologin)) {
+        if (Auth::attempt($infologin)) {
             return redirect('departemen')->with('success','Berhasil Login');
         } else {
-            return redirect('sesi')->with('success','Username dan Password Yang Dimasukan Salah');
+            return redirect('sesi/login')->with('success','Username dan Password Yang Dimasukan Salah');
         }
     }
     public function logout(){
-        Auth::logout;
-        return redirect('sesi')->with('success','Berhasil Logout');
+        Auth::logout();
+        return redirect('sesi/logout')->with('success','Berhasil Logout');
     }
 }

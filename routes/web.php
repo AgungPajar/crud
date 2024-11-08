@@ -20,10 +20,10 @@ Route::get('/', function () {
     return view('dashboard');
 })->name('dashboard');
 
-route::resource('departemen',DepartemenController::class);
+route::resource('departemen',DepartemenController::class)->middleware('iniLogin');
 
-Route::get('/login',[SessionController::class,'index']);
-Route::get('sesi',[SessionController::class,'index']);
-Route::post('/sesi/login',[SessionController::class,'login']);
-Route::get('/sesi/login',[SessionController::class,'login']);
+Route::get('/login',[SessionController::class,'index'])->middleware('iniTamu');
+Route::get('sesi',[SessionController::class,'index'])->middleware('iniTamu');
+Route::post('/sesi/login', [SessionController::class, 'login'])->middleware('iniTamu');
+Route::get('/sesi/logout',[SessionController::class,'logout']);
 
