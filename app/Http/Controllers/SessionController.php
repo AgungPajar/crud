@@ -14,30 +14,33 @@ class SessionController extends Controller
     public function index(){
         return view('sesi/index');
     }
-    public function login (Request $request){
-        Session::flash('email', $request->email);
-        
-        $request->validate([
+    public function login(Request $request){
+        Session::flash('email',$request->email);
+
+
+        $request->validate ([
             'email' => 'required',
             'password' => 'required',
         ]);
         [
-            'email'=>'Email Wajib Diisi',
+
+            'email'=> 'Email Wajib Diisi',
             'password' => 'Password Wajib Diisi',
+
         ];
 
         $infologin = [
             'email'=>$request->email,
             'password'=>$request->password
         ];
-        if (Auth::attempt($infologin)) {
-            return redirect('departemen')->with('success','Berhasil Login');
+        if (Auth::attempt($infologin)){
+            return redirect('departemen')->with('Success','Berhasil Login');
         } else {
-            return redirect('sesi/login')->with('success','Username dan Password Yang Dimasukan Salah');
+            return redirect('sesi')->with('Success','Username Dan Password Tidak Valid');
         }
     }
     public function logout(){
         Auth::logout();
-        return redirect('sesi')->with('success','Berhasil Logout');
+        return redirect('sesi')->with('Success','Berhasil Logout');
     }
 }

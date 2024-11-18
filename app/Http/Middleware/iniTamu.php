@@ -11,14 +11,15 @@ class iniTamu
 {
     /**
      * Handle an incoming request.
-     *
+     *`
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
     public function handle(Request $request, Closure $next): Response
     {
         if(Auth::check()){
-            return redirect('departemen')->with('sucess','Anda sudah login anda harus logout terlebih dahulu jika ingin ke halaman login');
+            return redirect('departemen')->with('success',value: 'Anda Sudah Login Anda Harus Logout Terlebih Dahulu Jika Ingin Ke Halaman Login');
         }
         return $next($request);
+
     }
 }

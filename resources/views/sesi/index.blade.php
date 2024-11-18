@@ -46,11 +46,11 @@
                                         <div class="form-group">
                                             <input type="email" class="form-control form-control-user"
                                                 name="email" value="{{Session::get('email')}}"
-                                                placeholder="Masukan Alamat Email">
+                                                placeholder="Masukan Alamat Email" required>
                                         </div>
                                         <div class="form-group">
                                             <input type="password" name="password" class="form-control form-control-user"
-                                                placeholder="Masukan Password Anda">
+                                                placeholder="Masukan Password Anda" required>
                                         </div>
                                         <button type="submit" class="btn btn-primary btn-user btn-block">ASUP</button>
                                         
@@ -71,14 +71,12 @@
     </div>
 
     <!-- Bootstrap core JavaScript-->
-    <script src="{{asset('vendor/jquery/jquery.min.js')}}"></script>
-    <script src="{{asset('vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
-
+    <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <!-- Core plugin JavaScript-->
-    <script src="{{asset('vendor/jquery-easing/jquery.easing.min.js')}}"></script>
-
+    <script src="{{ asset('vendor/jquery-easing/jquery.easing.min.js') }}"></script>
     <!-- Custom scripts for all pages-->
-    <script src="{{asset('vendor/chart.js/Chart.min.js')}}"></script>
+    <script src="{{ asset('js/sb-admin-2.min.js') }}"></script>
 </body>
 
 </html>
