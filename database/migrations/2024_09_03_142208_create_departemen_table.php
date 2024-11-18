@@ -12,7 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('departemen', function (Blueprint $table) {
+<<<<<<< HEAD
             $table->id('kodedepartemen');
+=======
+            $table->id('id');
+>>>>>>> a839ade (lima koma)
             $table->string('nama_departemen');
             $table->timestamps();
         });
