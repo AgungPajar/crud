@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Karyawan;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\file;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
+
 
 class KaryawanController extends Controller
 {
@@ -80,56 +82,45 @@ class KaryawanController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'nip' => 'required',
             'nama_karyawan' => 'required',
-            'gaji_karyawan' => 'required',
+            'gaji_karyawan' => 'required|numeric',
             'alamat' => 'required',
             'jenis_kelamin' => 'required',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ], [
-            'nip.required' => 'NIP wajib diisi',
             'nama_karyawan.required' => 'Nama Karyawan wajib diisi',
             'gaji_karyawan.required' => 'Gaji Karyawan wajib diisi',
             'alamat.required' => 'Alamat wajib diisi',
             'jenis_kelamin.required' => 'Jenis Kelamin wajib dipilih',
-            'foto.image' => 'File yang diunggah harus berupa gambar.',
-            'foto.mimes' => 'Hanya file bertipe JPEG, PNG, atau JPG yang diizinkan.',
-            'foto.max' => 'Ukuran foto maksimal adalah 2MB.',
+            'foto.image' => 'File harus berupa gambar',
+            'foto.mimes' => 'Hanya file JPEG, PNG, dan JPG yang diizinkan',
+            'foto.max' => 'Ukuran foto maksimal 2MB',
         ]);
 
-        // Ambil data karyawan lama
-        $karyawan = Karyawan::find($id); // Cek apakah karyawan ada dengan find($id)
+        $karyawan = Karyawan::findOrFail($id);
 
-        if (!$karyawan) {
-            return redirect('karyawan')->with('error', 'Karyawan tidak ditemukan');
-        }
-
-        // Cek apakah foto baru diupload
-        $filePath = $karyawan->foto; // Gunakan foto lama jika tidak ada foto baru
-
+        // Handle upload foto baru jika ada
+        $filePath = $karyawan->foto;
         if ($request->hasFile('foto')) {
-            if ($karyawan->foto) {
-                Storage::delete('public/' . $karyawan->foto); 
+            if ($filePath) {
+                Storage::delete('public/' . $filePath); // Hapus foto lama
             }
 
-            // Simpan foto baru
-            $filePath = $request->file('foto')->store('public/uploads');
+            $filePath = $request->file('foto')->store('uploads', 'public'); // Simpan foto baru
         }
 
-        $data = [
-            'nip' => $request->nip,
+        // Update data karyawan
+        $karyawan->update([
             'nama_karyawan' => $request->nama_karyawan,
             'gaji_karyawan' => $request->gaji_karyawan,
             'alamat' => $request->alamat,
             'jenis_kelamin' => $request->jenis_kelamin,
             'foto' => $filePath,
-        ];
-
-        // Update data karyawan
-        $karyawan->update($data);
+        ]);
 
         return redirect('karyawan')->with('success', 'Karyawan berhasil diubah');
     }
+
 
 
     public function destroy($id)
