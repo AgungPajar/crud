@@ -47,6 +47,7 @@
                                             <th>Jenis Kelamin</th>
                                             <th>Gaji Karyawan</th>
                                             <th>Alamat</th>
+                                            <th>Foto</th>
                                             <th>Aksi</th>
                                         </tr>
                                     </thead>
@@ -60,6 +61,13 @@
                                             <td>{{$karyawan->jenis_kelamin}}</td>
                                             <td>{{$karyawan->gaji_karyawan}}</td>
                                             <td>{{$karyawan->alamat}}</td>
+                                            <td>
+                                                @if ($karyawan->foto)
+                                                <img src="{{ Storage::url($karyawan->foto) }}" alt="Foto Karyawan" width="100">
+                                                @else
+                                                    <span>Tidak Ada Foto</span>
+                                                @endif
+                                            </td>
                                             <td>
                                               <a class="btn btn-sm btn-primary" href="{{url('karyawan/'.$karyawan->nip.'/edit')}}">Edit</a>
                                               <form action="{{url('karyawan/'.$karyawan->nip)}}" method="POST" style="display: inline-block">

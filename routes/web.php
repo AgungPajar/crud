@@ -1,15 +1,9 @@
 <?php
 
-<<<<<<< HEAD
-use App\Http\Controllers\DepartemenController;
-use App\Http\Controllers\SessionController;
-use Illuminate\Support\Facades\Route;
-=======
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DepartemenController;
 use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\SessionController;
->>>>>>> a839ade (lima koma)
 
 
 /*
@@ -28,11 +22,7 @@ Route::get('/', function () {
 })->name('dashboard');
 
 Route::resource('departemen', DepartemenController::class)->middleware('iniLogin');
-<<<<<<< HEAD
-
-=======
 Route::resource('karyawan', KaryawanController::class)->middleware('iniLogin');
->>>>>>> a839ade (lima koma)
 Route::get('/login',[SessionController::class,'index'])->middleware('iniTamu');
 Route::get('sesi',[SessionController::class,'index'])->middleware('iniTamu');
 Route::post('/sesi/login',[SessionController::class,'login'])->middleware('iniTamu');

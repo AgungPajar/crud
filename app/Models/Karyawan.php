@@ -15,6 +15,7 @@ class Karyawan extends Model
         'gaji_karyawan',
         'alamat',
         'jenis_kelamin',
+        'foto',
     ];
     
 }
