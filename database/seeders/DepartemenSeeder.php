@@ -4,7 +4,8 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;  
+use Illuminate\Support\Facades\DB;
+
 
 class DepartemenSeeder extends Seeder
 {
@@ -13,11 +14,12 @@ class DepartemenSeeder extends Seeder
      */
     public function run(): void
     {
+        DB::table('departemen')->truncate();
         //
         $departemen = [
-            ['id'=>'110','nama_departemen'=>'IT'],
-            ['id'=>'111','nama_departemen'=>'Logistics'],
-            ['id'=>'112','nama_departemen'=>'HR'],
+            ['id' => '110', 'nama_departemen' => 'IT'],
+            ['id' => '111', 'nama_departemen' => 'Logistics'],
+            ['id' => '112', 'nama_departemen' => 'HR'],
         ];
         DB::table('departemen')->insert($departemen);
     }

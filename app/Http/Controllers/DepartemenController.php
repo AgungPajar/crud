@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Departemen;
 use Illuminate\Http\Request;
-use Reflector;
 
 class DepartemenController extends Controller
 {
@@ -20,8 +19,6 @@ class DepartemenController extends Controller
 
     /**
      * Show the form for creating a new resource.
-     * 
-     * 
      */
     public function create()
     {
@@ -41,7 +38,6 @@ class DepartemenController extends Controller
         Departemen::create([
             'nama_departemen' =>$request->nama_departemen,
         ]);
-
         return redirect('departemen')->with('success','Departemen berhasil ditambahkan');
     }
 
@@ -59,14 +55,14 @@ class DepartemenController extends Controller
     public function edit($id)
     {
         //
-        $data = Departemen::where('kodedepartemen',$id)->first();
+        $data = Departemen::where('id',$id)->first();
         return view('departemen.edit')->with('data',$data);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request,$id)
+    public function update(Request $request, $id)
     {
         //
         $request->validate([
@@ -75,9 +71,8 @@ class DepartemenController extends Controller
         $data = ([
             'nama_departemen' =>$request->nama_departemen,
         ]);
-        
-        Departemen::where('kodedepartemen',$id)->update($data);
-        return redirect('departemen')->with('success','Departemen berhasil diubah');
+        Departemen::where('id',$id)->update($data);
+        return redirect('departemen')->with('success','Departemen berhasil Di Update!');
     }
 
     /**
@@ -86,7 +81,7 @@ class DepartemenController extends Controller
     public function destroy($id)
     {
         //
-        Departemen::where('kodedepartemen',$id)->delete();
-        return redirect('departemen')->with('success','Departemen berhasil dihapus');
+        Departemen::where('id',$id)->delete();
+        return redirect('departemen')->with('success','Departemen berhasil dihapus!');
     }
 }

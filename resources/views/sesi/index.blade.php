@@ -35,7 +35,6 @@
                     <div class="card-body p-0">
                         <!-- Nested Row within Card Body -->
                         <div class="row">
-                            
                             <div class="col-lg-6">
                                 <div class="p-5">
                                     <div class="text-center">
@@ -52,11 +51,8 @@
                                             <input type="password" name="password" class="form-control form-control-user"
                                                 placeholder="Masukan Password Anda" required>
                                         </div>
-                                        <button type="submit" class="btn btn-primary btn-user btn-block">ASUP</button>
-                                        
-                                        
+                                        <button type="submit" class="btn btn-primary btn-user btn-block">Masuk</button>
                                     </form>
-                                    
                                     
                                 </div>
                             </div>
