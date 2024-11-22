@@ -35,7 +35,7 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="foto">Foto</label>
+                            <label for="foto">Up Foto</label>
                             <input type="file" id="foto" class="form-control" name="foto" accept="image/*"
                                 required>
                         </div>

@@ -12,7 +12,7 @@
     @endif
 
     {{-- Form edit karyawan --}}
-    <form action="{{ url('karyawan/' . $data->id) }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ url('karyawan/' . $data->nip) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
         <div class="row">
@@ -25,19 +25,22 @@
                         {{-- Field NIP (readonly jika tidak boleh diubah) --}}
                         <div class="form-group">
                             <label for="nip">NIP</label>
-                            <input type="text" class="form-control" name="nip" value="{{ old('nip', $data->nip) }}" readonly>
+                            <input type="text" class="form-control" name="nip" value="{{ old('nip', $data->nip) }}"
+                                readonly>
                         </div>
 
                         {{-- Nama Karyawan --}}
                         <div class="form-group">
                             <label for="nama_karyawan">Nama Karyawan</label>
-                            <input type="text" class="form-control" name="nama_karyawan" value="{{ old('nama_karyawan', $data->nama_karyawan) }}">
+                            <input type="text" class="form-control" name="nama_karyawan"
+                                value="{{ old('nama_karyawan', $data->nama_karyawan) }}">
                         </div>
 
                         {{-- Gaji Karyawan --}}
                         <div class="form-group">
                             <label for="gaji_karyawan">Gaji Karyawan</label>
-                            <input type="number" class="form-control" name="gaji_karyawan" value="{{ old('gaji_karyawan', $data->gaji_karyawan) }}">
+                            <input type="number" class="form-control" name="gaji_karyawan"
+                                value="{{ old('gaji_karyawan', $data->gaji_karyawan) }}">
                         </div>
 
                         {{-- Alamat --}}
@@ -51,27 +54,30 @@
                             <label for="jenis_kelamin">Jenis Kelamin</label>
                             <select class="form-control" name="jenis_kelamin">
                                 <option value="" disabled hidden>--Pilih Jenis Kelamin--</option>
-                                <option value="Pria" {{ old('jenis_kelamin', $data->jenis_kelamin) == 'Pria' ? 'selected' : '' }}>Pria</option>
-                                <option value="Wanita" {{ old('jenis_kelamin', $data->jenis_kelamin) == 'Wanita' ? 'selected' : '' }}>Wanita</option>
+                                <option value="Pria"
+                                    {{ old('jenis_kelamin', $data->jenis_kelamin) == 'Pria' ? 'selected' : '' }}>Pria
+                                </option>
+                                <option value="Wanita"
+                                    {{ old('jenis_kelamin', $data->jenis_kelamin) == 'Wanita' ? 'selected' : '' }}>Wanita
+                                </option>
                             </select>
                         </div>
 
-                        {{-- Foto --}}
+                        @if ($data->foto)
+                            <div class="form-group">
+                                <img style="max: width 100px; max-height:100px" src="{{ url('foto') . '/' . $data->foto }}">
+                            </div>
+                        @endif
                         <div class="form-group">
-                            <label for="foto">Foto</label>
-                            <input type="file" class="form-control" name="foto" accept="image/*">
-                            @if ($data->foto)
-                                <br>
-                                <label>Foto Saat Ini:</label><br>
-                                <img src="{{ asset('storage/' . $data->foto) }}" alt="Foto Karyawan" width="100">
-                            @endif
+                            <label for="foto">Upload Foto Karyawan</label>
+                            <input type="file" id="foto" class="form-control-file" name="foto">
                         </div>
-                    </div>
-                    <div class="card-footer">
-                        <button type="submit" class="btn btn-primary">Simpan</button>
+
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-primary">Simpan</button>
+                        </div>`
                     </div>
                 </div>
             </div>
-        </div>
     </form>
 @endsection

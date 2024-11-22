@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Karyawan;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
 
 
 class KaryawanController extends Controller
@@ -29,22 +29,21 @@ class KaryawanController extends Controller
             'gaji_karyawan' => 'required',
             'alamat' => 'required',
             'jenis_kelamin' => 'required',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'foto' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ], [
             'nip.required' => 'NIP wajib diisi',
             'nama_karyawan.required' => 'Nama Karyawan wajib diisi',
             'gaji_karyawan.required' => 'Gaji Karyawan wajib diisi',
             'alamat.required' => 'Alamat wajib diisi',
             'jenis_kelamin.required' => 'Jenis Kelamin wajib dipilih',
+            'foto.required' => 'Foto Wajib Diisi!',
             'foto.image' => 'File harus berupa gambar',
         ]);
 
-        $filePath = null;
-        if ($request->hasFile('foto')) {
-            $file = $request->file('foto');
-            $fileName = time() . '_' . $file->getClientOriginalName(); // Memberikan nama file unik
-            $filePath = $file->storeAs('public/uploads', $fileName); // Menyimpan foto di folder public/uploads
-        }
+        $foto_file = $request->file('foto');
+        $foto_ekstensi = $foto_file->extension();
+        $foto_nama = date('ymdhis') . "." . $foto_ekstensi;
+        $foto_file->move(public_path('foto'), $foto_nama);
 
 
         $data = [
@@ -53,7 +52,7 @@ class KaryawanController extends Controller
             'gaji_karyawan' => $request->input('gaji_karyawan'),
             'alamat' => $request->input('alamat'),
             'jenis_kelamin' => $request->input('jenis_kelamin'),
-            'foto' => $filePath,
+            'foto' => $foto_nama,
         ];
 
         Karyawan::create($data);
@@ -67,65 +66,68 @@ class KaryawanController extends Controller
 
     public function edit($id)
     {
-        // Ambil data karyawan berdasarkan nip
         $data = Karyawan::where('nip', $id)->first();
-
-        // Jika data tidak ditemukan, kembalikan dengan pesan error
-        if (!$data) {
-            return redirect('karyawan')->with('error', 'Data tidak ditemukan.');
-        }
-
-        // Kirim data ke view edit
         return view('karyawan.edit')->with('data', $data);
     }
 
     public function update(Request $request, $id)
     {
         $request->validate([
+            'nip' => 'required',
             'nama_karyawan' => 'required',
-            'gaji_karyawan' => 'required|numeric',
+            'gaji_karyawan' => 'required',
             'alamat' => 'required',
             'jenis_kelamin' => 'required',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ], [
-            'nama_karyawan.required' => 'Nama Karyawan wajib diisi',
-            'gaji_karyawan.required' => 'Gaji Karyawan wajib diisi',
-            'alamat.required' => 'Alamat wajib diisi',
-            'jenis_kelamin.required' => 'Jenis Kelamin wajib dipilih',
-            'foto.image' => 'File harus berupa gambar',
-            'foto.mimes' => 'Hanya file JPEG, PNG, dan JPG yang diizinkan',
-            'foto.max' => 'Ukuran foto maksimal 2MB',
+            'nip.required' => 'NIP Wajib Diisi!',
+            'nama_karyawan.required' => 'Nama Karyawan Wajib Diisi!',
+            'gaji_karyawan.required' => 'Gaji Karyawan Wajib Diisi!',
+            'alamat.required' => 'Alamat Karyawan Wajib Diisi!',
+            'jenis_kelamin.required' => 'Data Jenis Kelamin Wajib Diisi!',
         ]);
 
-        $karyawan = Karyawan::findOrFail($id);
-
-        // Handle upload foto baru jika ada
-        $filePath = $karyawan->foto;
-        if ($request->hasFile('foto')) {
-            if ($filePath) {
-                Storage::delete('public/' . $filePath); // Hapus foto lama
-            }
-
-            $filePath = $request->file('foto')->store('uploads', 'public'); // Simpan foto baru
-        }
-
-        // Update data karyawan
-        $karyawan->update([
+        $data = [
+            'nip' => $request->nip,
             'nama_karyawan' => $request->nama_karyawan,
             'gaji_karyawan' => $request->gaji_karyawan,
             'alamat' => $request->alamat,
             'jenis_kelamin' => $request->jenis_kelamin,
-            'foto' => $filePath,
-        ]);
+        ];
 
-        return redirect('karyawan')->with('success', 'Karyawan berhasil diubah');
+        if ($request->hasFile('foto')) {
+            $request->validate([
+                'foto' => 'mimes:jpeg,jpg,png,gif'
+            ], [
+                'foto.mimes' => 'Foto yang diperbolehkan berekstensi jpeg, jpg, png, gif'
+            ]);
+
+            $foto_file = $request->file('foto');
+            $foto_ekstensi = $foto_file->extension();
+            $foto_nama = date('ymdhis') . "." . $foto_ekstensi;
+            $foto_file->move(public_path('foto'), $foto_nama);
+
+            $data_foto = Karyawan::where('nip', $id)->first();
+            if ($data_foto && $data_foto->foto) {
+                File::delete(public_path('foto') . '/' . $data_foto->foto);
+            }
+
+            $data['foto'] = $foto_nama;
+        }
+
+        Karyawan::where('nip', $id)->update($data);
+        return redirect('karyawan')->with('success', 'Data Berhasil Diubah!');
     }
 
 
 
     public function destroy($id)
     {
+        //
+
+        $data = Karyawan::where('nip', $id)->first();
+        File::delete(public_path('foto') . '/' . $data->foto);
+
         Karyawan::where('nip', $id)->delete();
-        return redirect('karyawan')->with('success', 'Karyawan berhasil dihapus');
+        return redirect('karyawan')->with('success', 'Data Berhasil Dihapus!');
     }
 }
