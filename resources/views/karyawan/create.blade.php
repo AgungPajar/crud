@@ -35,6 +35,18 @@
                             </select>
                         </div>
                         <div class="form-group">
+                            <label for="departemen_id">Departemen</label>
+                            <select name="departemen_id" id="departemen_id" class="form-control">
+                                <option value="">Pilih Departemen</option>
+                                @foreach ($departemen as $item)
+                                    <option value="{{ $item->id }}">{{ $item->nama_departemen }}</option>
+                                @endforeach
+                            </select>
+                            @error('departemen_id')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="form-group">
                             <label for="foto">Up Foto</label>
                             <input type="file" id="foto" class="form-control" name="foto" accept="image/*"
                                 required>

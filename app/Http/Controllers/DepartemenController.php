@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Departemen;
 use Illuminate\Http\Request;
+use App\Models\Karyawan;
 
 class DepartemenController extends Controller
 {

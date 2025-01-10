@@ -44,6 +44,7 @@
                                                 <th>Nip</th>
                                                 <th>Nama Karyawan</th>
                                                 <th>Jenis Kelamin</th>
+                                                <th>Departemen</th>
                                                 <th>Gaji Karyawan</th>
                                                 <th>Alamat</th>
                                                 <th>Foto</th>
@@ -58,6 +59,7 @@
                                                     <td>{{ $karyawan->nip }}</td>
                                                     <td>{{ $karyawan->nama_karyawan }}</td>
                                                     <td>{{ $karyawan->jenis_kelamin }}</td>
+                                                    <td>{{ $karyawan->departemen['nama_departemen'] }}</td>
                                                     <td>{{ $karyawan->gaji_karyawan }}</td>
                                                     <td>{{ $karyawan->alamat }}</td>
                                                     <td>

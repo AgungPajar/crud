@@ -6,6 +6,7 @@ use App\Models\Karyawan;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
+use App\Models\Departemen;
 
 
 class KaryawanController extends Controller
@@ -17,8 +18,9 @@ class KaryawanController extends Controller
     }
 
     public function create()
-    {
-        return view('karyawan.create');
+    { 
+        $departemen = Departemen::all();
+        return view('karyawan.create',['departemen'=>$departemen]);
     }
 
     public function store(Request $request)
@@ -52,6 +54,7 @@ class KaryawanController extends Controller
             'gaji_karyawan' => $request->input('gaji_karyawan'),
             'alamat' => $request->input('alamat'),
             'jenis_kelamin' => $request->input('jenis_kelamin'),
+            'departemen_id' => $request->input('departemen_id'),
             'foto' => $foto_nama,
         ];
 
