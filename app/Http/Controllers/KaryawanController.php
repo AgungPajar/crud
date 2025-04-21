@@ -13,8 +13,8 @@ class KaryawanController extends Controller
 {
     public function index()
     {
-        $karyawan = Karyawan::all();
-        return view('karyawan.index', ['karyawan' => $karyawan]);
+        $karyawan = Karyawan::with('departemen')->get();
+        return response()->json($karyawan);
     }
 
     public function create()
@@ -26,28 +26,32 @@ class KaryawanController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nip' => 'required',
+            'nip' => 'required|unique:karyawan,nip',
             'nama_karyawan' => 'required',
-            'gaji_karyawan' => 'required',
+            'gaji_karyawan' => 'required|numeric',
             'alamat' => 'required',
-            'jenis_kelamin' => 'required',
+            'jenis_kelamin' => 'required|in:Pria,Wanita', // Laki-laki (L) atau Perempuan (P)
+            'departemen_id' => 'required|exists:departemen,id', // Pastikan departemen_id valid
             'foto' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ], [
             'nip.required' => 'NIP wajib diisi',
+            'nip.unique' => 'NIP sudah digunakan',
             'nama_karyawan.required' => 'Nama Karyawan wajib diisi',
             'gaji_karyawan.required' => 'Gaji Karyawan wajib diisi',
+            'gaji_karyawan.numeric' => 'Gaji Karyawan harus berupa angka',
             'alamat.required' => 'Alamat wajib diisi',
             'jenis_kelamin.required' => 'Jenis Kelamin wajib dipilih',
-            'foto.required' => 'Foto Wajib Diisi!',
+            'foto.required' => 'Foto wajib diisi',
             'foto.image' => 'File harus berupa gambar',
         ]);
 
+        // Simpan file foto
         $foto_file = $request->file('foto');
         $foto_ekstensi = $foto_file->extension();
         $foto_nama = date('ymdhis') . "." . $foto_ekstensi;
         $foto_file->move(public_path('foto'), $foto_nama);
 
-
+        // Simpan data karyawan
         $data = [
             'nip' => $request->input('nip'),
             'nama_karyawan' => $request->input('nama_karyawan'),
@@ -58,13 +62,26 @@ class KaryawanController extends Controller
             'foto' => $foto_nama,
         ];
 
-        Karyawan::create($data);
-        return redirect('karyawan')->with('success', 'Karyawan berhasil ditambahkan');
+        $karyawan = Karyawan::create($data);
+
+        return response()->json([
+            'message' => 'Karyawan berhasil ditambahkan',
+            'data' => $karyawan,
+        ], 201);
     }
 
-    public function show(Karyawan $karyawan)
+    public function show($id)
     {
         //
+        $karyawan = Karyawan::with('departemen')->find($id);
+
+        if (!$karyawan) {
+            return response()->json([
+                'message' => 'Karyawan tidak ditemukan',
+            ], 404); // HTTP Status Code 404 Not Found
+        }
+
+        return response()->json($karyawan);
     }
 
     public function edit($id)
@@ -78,50 +95,62 @@ class KaryawanController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'nip' => 'required',
+            'nip' => 'required|unique:karyawan,nip,' . $id,
             'nama_karyawan' => 'required',
-            'gaji_karyawan' => 'required',
+            'gaji_karyawan' => 'required|numeric',
             'alamat' => 'required',
-            'jenis_kelamin' => 'required',
+            'jenis_kelamin' => 'required|in:Pria,Wanita',
+            'departemen_id' => 'required|exists:departemen,id',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ], [
-            'nip.required' => 'NIP Wajib Diisi!',
-            'nama_karyawan.required' => 'Nama Karyawan Wajib Diisi!',
-            'gaji_karyawan.required' => 'Gaji Karyawan Wajib Diisi!',
-            'alamat.required' => 'Alamat Karyawan Wajib Diisi!',
-            'jenis_kelamin.required' => 'Data Jenis Kelamin Wajib Diisi!',
+            'nip.required' => 'NIP wajib diisi',
+            'nip.unique' => 'NIP sudah digunakan',
+            'nama_karyawan.required' => 'Nama Karyawan wajib diisi',
+            'gaji_karyawan.required' => 'Gaji Karyawan wajib diisi',
+            'gaji_karyawan.numeric' => 'Gaji Karyawan harus berupa angka',
+            'alamat.required' => 'Alamat wajib diisi',
+            'jenis_kelamin.required' => 'Jenis Kelamin wajib dipilih',
+            'foto.image' => 'File harus berupa gambar',
         ]);
 
+        $karyawan = Karyawan::find($id);
+
+        if (!$karyawan) {
+            return response()->json([
+                'message' => 'Karyawan tidak ditemukan',
+            ], 404); // HTTP Status Code 404 Not Found
+        }
+
         $data = [
-            'nip' => $request->nip,
-            'nama_karyawan' => $request->nama_karyawan,
-            'gaji_karyawan' => $request->gaji_karyawan,
-            'alamat' => $request->alamat,
+            'nip' => $request->input('nip'),
+            'nama_karyawan' => $request->input('nama_karyawan'),
+            'gaji_karyawan' => $request->input('gaji_karyawan'),
+            'alamat' => $request->input('alamat'),
+            'jenis_kelamin' => $request->input('jenis_kelamin'),
             'departemen_id' => $request->input('departemen_id'),
-            'jenis_kelamin' => $request->jenis_kelamin,
         ];
 
+        // Jika ada file foto baru, hapus foto lama dan simpan yang baru
         if ($request->hasFile('foto')) {
-            $request->validate([
-                'foto' => 'mimes:jpeg,jpg,png,gif'
-            ], [
-                'foto.mimes' => 'Foto yang diperbolehkan berekstensi jpeg, jpg, png, gif'
-            ]);
-
             $foto_file = $request->file('foto');
             $foto_ekstensi = $foto_file->extension();
             $foto_nama = date('ymdhis') . "." . $foto_ekstensi;
             $foto_file->move(public_path('foto'), $foto_nama);
 
-            $data_foto = Karyawan::where('nip', $id)->first();
-            if ($data_foto && $data_foto->foto) {
-                File::delete(public_path('foto') . '/' . $data_foto->foto);
+            // Hapus foto lama jika ada
+            if ($karyawan->foto) {
+                File::delete(public_path('foto') . '/' . $karyawan->foto);
             }
 
             $data['foto'] = $foto_nama;
         }
 
-        Karyawan::where('nip', $id)->update($data);
-        return redirect('karyawan')->with('success', 'Data Berhasil Diubah!');
+        $karyawan->update($data);
+
+        return response()->json([
+            'message' => 'Karyawan berhasil diupdate',
+            'data' => $karyawan,
+        ]);
     }
 
 
@@ -129,11 +158,23 @@ class KaryawanController extends Controller
     public function destroy($id)
     {
         //
+        $karyawan = Karyawan::find($id);
 
-        $data = Karyawan::where('nip', $id)->first();
-        File::delete(public_path('foto') . '/' . $data->foto);
+        if (!$karyawan) {
+            return response()->json([
+                'message' => 'Karyawan tidak ditemukan',
+            ], 404); // HTTP Status Code 404 Not Found
+        }
 
-        Karyawan::where('nip', $id)->delete();
-        return redirect('karyawan')->with('success', 'Data Berhasil Dihapus!');
+        // Hapus foto jika ada
+        if ($karyawan->foto) {
+            File::delete(public_path('foto') . '/' . $karyawan->foto);
+        }
+
+        $karyawan->delete();
+
+        return response()->json([
+            'message' => 'Karyawan berhasil dihapus',
+        ]);
     }
 }

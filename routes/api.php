@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\DepartemenController;
 
 /*
@@ -27,4 +28,12 @@ Route::middleware([])->group(function () {
         Route::put('/{id}', [DepartemenController::class, 'update']);
         Route::delete('/{id}', [DepartemenController::class, 'destroy']);
     });
+});
+
+Route::prefix('karyawan')->group(function () {
+    Route::get('/', [KaryawanController::class, 'index']); // GET /api/karyawan
+    Route::post('/', [KaryawanController::class, 'store']); // POST /api/karyawan
+    Route::get('/{id}', [KaryawanController::class, 'show']); // GET /api/karyawan/{id}
+    Route::put('/{id}', [KaryawanController::class, 'update']); // PUT /api/karyawan/{id}
+    Route::delete('/{id}', [KaryawanController::class, 'destroy']); // DELETE /api/karyawan/{id}
 });
