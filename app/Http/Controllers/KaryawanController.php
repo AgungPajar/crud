@@ -69,8 +69,10 @@ class KaryawanController extends Controller
 
     public function edit($id)
     {
+        $departemen = Departemen::all();
         $data = Karyawan::where('nip', $id)->first();
-        return view('karyawan.edit')->with('data', $data);
+        
+        return view('karyawan.edit',['departemen'=>$departemen, 'data' => $data]);
     }
 
     public function update(Request $request, $id)
@@ -94,6 +96,7 @@ class KaryawanController extends Controller
             'nama_karyawan' => $request->nama_karyawan,
             'gaji_karyawan' => $request->gaji_karyawan,
             'alamat' => $request->alamat,
+            'departemen_id' => $request->input('departemen_id'),
             'jenis_kelamin' => $request->jenis_kelamin,
         ];
 

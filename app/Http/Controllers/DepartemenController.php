@@ -15,7 +15,7 @@ class DepartemenController extends Controller
     {
         //
         $departemen = Departemen::all();
-        return view('departemen.index', ['departemen'=>$departemen]);
+        return response()->json($departemen);
     }
 
     /**
@@ -34,20 +34,34 @@ class DepartemenController extends Controller
     {
         //
         $request->validate([
-            'nama_departemen' => 'required',
+            'nama_departemen' => 'required|string|max:255',
         ]);
-        Departemen::create([
-            'nama_departemen' =>$request->nama_departemen,
+
+        $departemen = Departemen::create([
+            'nama_departemen' => $request->nama_departemen,
         ]);
-        return redirect('departemen')->with('success','Departemen berhasil ditambahkan');
+
+        return response()->json([
+            'message' => 'Departemen berhasil ditambahkan',
+            'data' => $departemen,
+        ], 201); // HTTP Status Code 201 Created
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Departemen $departemen)
+    public function show($id)
     {
         //
+        $departemen = Departemen::find($id);
+
+        if (!$departemen) {
+            return response()->json([
+                'message' => 'Departemen tidak ditemukan',
+            ], 404); // HTTP Status Code 404 Not Found
+        }
+
+        return response()->json($departemen);
     }
 
     /**
@@ -67,13 +81,25 @@ class DepartemenController extends Controller
     {
         //
         $request->validate([
-            'nama_departemen' => 'required',
+            'nama_departemen' => 'required|string|max:255',
         ]);
-        $data = ([
-            'nama_departemen' =>$request->nama_departemen,
+
+        $departemen = Departemen::find($id);
+
+        if (!$departemen) {
+            return response()->json([
+                'message' => 'Departemen tidak ditemukan',
+            ], 404); // HTTP Status Code 404 Not Found
+        }
+
+        $departemen->update([
+            'nama_departemen' => $request->nama_departemen,
         ]);
-        Departemen::where('id',$id)->update($data);
-        return redirect('departemen')->with('success','Departemen berhasil Di Update!');
+
+        return response()->json([
+            'message' => 'Departemen berhasil diupdate',
+            'data' => $departemen,
+        ]);
     }
 
     /**
@@ -82,7 +108,18 @@ class DepartemenController extends Controller
     public function destroy($id)
     {
         //
-        Departemen::where('id',$id)->delete();
-        return redirect('departemen')->with('success','Departemen berhasil dihapus!');
+        $departemen = Departemen::find($id);
+
+        if (!$departemen) {
+            return response()->json([
+                'message' => 'Departemen tidak ditemukan',
+            ], 404); // HTTP Status Code 404 Not Found
+        }
+
+        $departemen->delete();
+
+        return response()->json([
+            'message' => 'Departemen berhasil dihapus',
+        ]);
     }
 }

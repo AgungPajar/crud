@@ -20,50 +20,98 @@
     <!-- Custom styles for this template-->
     <link href="{{asset('css/sb-admin-2.min.css')}}" rel="stylesheet">
 
+    <style>
+        body {
+            background-color: #f8f9fc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .login-container {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            padding: 30px;
+        }
+
+        .login-container h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+
+        .login-container .form-control {
+            margin-bottom: 15px;
+        }
+
+        .login-container button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4e73df;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .login-container button:hover {
+            background-color: #3751a6;
+        }
+
+        .forgot-password {
+            margin-top: 10px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .forgot-password a {
+            color: #4e73df;
+            text-decoration: none;
+        }
+
+        .footer {
+            margin-top: 20px;
+            font-size: 14px;
+            text-align: center;
+            color: #666;
+        }
+
+        .footer a {
+            color: #4e73df;
+            text-decoration: none;
+        }
+    </style>
+
 </head>
 
 <body class="bg-gradient-primary">
 
-    <div class="container">
-
-        <!-- Outer Row -->
-        <div class="row justify-content-center">
-
-            <div class="col-xl-10 col-lg-12 col-md-9">
-
-                <div class="card o-hidden border-0 shadow-lg my-5">
-                    <div class="card-body p-0">
-                        <!-- Nested Row within Card Body -->
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="p-5">
-                                    <div class="text-center">
-                                        <h1 class="h4 text-gray-900 mb-4">Selamat Datang</h1>
-                                    </div>
-                                    <form class="user" action="/sesi/login" method="POST">
-                                        @csrf
-                                        <div class="form-group">
-                                            <input type="email" class="form-control form-control-user"
-                                                name="email" value="{{Session::get('email')}}"
-                                                placeholder="Masukan Alamat Email" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="password" name="password" class="form-control form-control-user"
-                                                placeholder="Masukan Password Anda" required>
-                                        </div>
-                                        <button type="submit" class="btn btn-primary btn-user btn-block">Masuk</button>
-                                    </form>
-                                    
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
+    <div class="login-container">
+        <h1>LOGIN</h1>
+        <form action="/sesi/login" method="POST">
+            @csrf
+            <div class="form-group">
+                <input type="email" name="email" class="form-control" placeholder="Username" value="{{ Session::get('email') }}" required>
             </div>
-
+            <div class="form-group">
+                <input type="password" name="password" class="form-control" placeholder="Password" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Sign In</button>
+        </form>
+        <div class="forgot-password">
+            <a href="#">Forgot your password?</a>
         </div>
-
+        <div class="footer">
+            <a href="https://codelatte.org">AgungPajar</a>
+        </div>
     </div>
 
     <!-- Bootstrap core JavaScript-->

@@ -71,9 +71,6 @@
                                     <option value="{{ $item->id }}">{{ $item->nama_departemen }}</option>
                                 @endforeach
                             </select>
-                            @error('departemen_id')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
                         </div>
 
                         @if ($data->foto)
